@@ -14,15 +14,27 @@ This is the best-performing solution, but it takes a while to train.
 
 This solution largely used a standard RL agent, based on the sample code provided. The specific changes were:
 - Use SAC instead of PPO, as it is generally high-performing in continuous control settings.
-- Alter the reward function to optimise the Sharpe ratio directly
-- Make the action space between -0.1 and +0.1, to constrain the agent.
-- Modify the environment to stop episodes early, as the default length was very long, leading to slow training.
-- Replace the try except checks with if statements ([as they can be quite expensive](https://stackoverflow.com/questions/2522005/cost-of-exception-handlers-in-python)).
+- Train for around 60 times longer than the default code had, roughly 600000 steps.
+- Some environmental changes (as training for 12+ hours showed no improvement). Most of these could be achieved by having a wrapper class around the current environment, or manually altering the stable baselines code, but the easiest was just to modify the code itself.
+  - Alter the reward function to optimise the Sharpe ratio directly.
+  - Make the action space between -0.1 and +0.1, to constrain the agent.
+  - Modify the environment to stop episodes early, as the default length was very long, leading to slow training.
+  - Replace the try/except checks with if statements ([as they can be quite expensive](https://stackoverflow.com/questions/2522005/cost-of-exception-handlers-in-python)).
 #### Reproduction
 To reproduce this, you can do:
 
 ```
 cd rl_agent
+python train.py
+python submit.py
+```
+
+### RL - Seeded
+Now, the above RL agent did not set the random seed, so results may vary. The code in `rl_agent_seeded` does and will thus give the same results when run multiple times. The actual training code, however, is identical to that in `rl_agent`.
+To reproduce this, you can run:
+
+```
+cd rl_agent_seeded
 python train.py
 python submit.py
 ```
